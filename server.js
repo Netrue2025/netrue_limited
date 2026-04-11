@@ -9,7 +9,9 @@ import healthRoutes from "./src/routes/healthRoutes.js";
 import productRoutes from "./src/routes/productRoutes.js";
 import projectRoutes from "./src/routes/projectRoutes.js";
 import publicationRoutes from "./src/routes/publicationRoutes.js";
+import shopRoutes from "./src/routes/shopRoutes.js";
 import softwareRoutes from "./src/routes/softwareRoutes.js";
+import teamRoutes from "./src/routes/teamRoutes.js";
 
 dotenv.config();
 
@@ -45,7 +47,9 @@ app.use("/api/health", healthRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/software", softwareRoutes);
+app.use("/api/shop", shopRoutes);
 app.use("/api/publications", publicationRoutes);
+app.use("/api/team", teamRoutes);
 app.use("/api/contact", contactRoutes);
 
 app.use(notFound);
