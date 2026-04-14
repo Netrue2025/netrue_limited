@@ -3,6 +3,7 @@ import ApiError from "./apiError.js";
 export const PRODUCT_CATEGORIES = ["AI", "IoT", "Agritech", "Software"];
 export const PRODUCT_STATUSES = ["Prototype", "Pilot", "Available", "Pre-order"];
 export const PROJECT_STAGES = ["Discovery", "Pilot", "Rollout", "Production"];
+export const PROJECT_STATUSES = ["in_progress", "product_ready", "live", "pending"];
 export const SHOP_ITEM_TYPES = ["Course", "Tool", "Template", "Guide"];
 export const PRICING_MODELS = ["Free", "Paid"];
 export const SOCIAL_PLATFORMS = ["LinkedIn", "X", "Instagram", "Facebook", "Website"];

@@ -17,7 +17,17 @@ const publicationSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    category: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     publishedOn: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    link: {
       type: String,
       default: "",
       trim: true,

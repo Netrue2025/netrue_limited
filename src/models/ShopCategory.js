@@ -30,7 +30,6 @@ const shopCategorySchema = new mongoose.Schema(
   },
 );
 
-shopCategorySchema.index({ slug: 1 }, { unique: true });
 shopCategorySchema.index({ isActive: 1, createdAt: -1 });
 
 const ShopCategory = mongoose.model("ShopCategory", shopCategorySchema);

@@ -2,6 +2,7 @@ import Publication from "../models/Publication.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/apiError.js";
 import { ensureOptionalString, ensureRequiredString, ensureStringArray, hasOwn } from "../utils/validators.js";
+import { buildPaginationMeta, resolvePagination } from "../utils/pagination.js";
 
 const buildPublicationPayload = (body, { partial = false } = {}) => {
   const payload = {};
@@ -20,10 +21,24 @@ const buildPublicationPayload = (body, { partial = false } = {}) => {
     payload.authors = [];
   }
 
+  if (hasOwn(body, "category")) {
+    payload.category = ensureOptionalString(body.category, "Category");
+  } else if (!partial) {
+    payload.category = "";
+  }
+
   if (hasOwn(body, "publishedOn")) {
     payload.publishedOn = ensureOptionalString(body.publishedOn, "Published date");
   } else if (!partial) {
     payload.publishedOn = "";
+  }
+
+  if (hasOwn(body, "link")) {
+    payload.link = ensureOptionalString(body.link, "Publication link");
+  } else if (hasOwn(body, "documentUrl")) {
+    payload.link = ensureOptionalString(body.documentUrl, "Publication link");
+  } else if (!partial) {
+    payload.link = "";
   }
 
   if (hasOwn(body, "pdfUrl")) {
@@ -41,13 +56,24 @@ const buildPublicationPayload = (body, { partial = false } = {}) => {
   return payload;
 };
 
-export const getPublications = asyncHandler(async (_req, res) => {
-  const publications = await Publication.find().sort({ createdAt: -1 });
+export const getPublications = asyncHandler(async (req, res) => {
+  const filters = {};
+
+  if (req.query.category) {
+    filters.category = new RegExp(`^${req.query.category}$`, "i");
+  }
+
+  const { limit, page, skip } = resolvePagination(req.query, { defaultLimit: 8 });
+  const [publications, total] = await Promise.all([
+    Publication.find(filters).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Publication.countDocuments(filters)
+  ]);
 
   res.status(200).json({
     success: true,
     count: publications.length,
     data: publications,
+    pagination: buildPaginationMeta({ page, limit, total }),
   });
 });
 

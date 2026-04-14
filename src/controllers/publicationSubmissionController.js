@@ -1,3 +1,4 @@
+import PublicationService from "../models/PublicationService.js";
 import PublicationSubmission from "../models/PublicationSubmission.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/apiError.js";
@@ -15,11 +16,24 @@ import {
 } from "../utils/validators.js";
 import { buildPaginationMeta, resolvePagination } from "../utils/pagination.js";
 
-const SERVICE_PRICING = {
+const DEFAULT_SERVICE_PRICING = {
   publication_submission: { priceUsd: 80, priceNgn: 80 * 1480 },
   proofreading: { priceUsd: 25, priceNgn: 25 * 1480 },
   full_writing_publishing: { priceUsd: 150, priceNgn: 150 * 1480 },
 };
+
+async function resolveServicePricing(serviceType) {
+  const service = await PublicationService.findOne({ serviceType, isActive: true }).lean();
+
+  if (service) {
+    return {
+      priceUsd: Number(service.priceUsd || 0),
+      priceNgn: Number(service.priceNgn || 0)
+    };
+  }
+
+  return DEFAULT_SERVICE_PRICING[serviceType];
+}
 
 const buildPublicationSubmissionPayload = async (body, { partial = false } = {}) => {
   const payload = {};
@@ -46,8 +60,9 @@ const buildPublicationSubmissionPayload = async (body, { partial = false } = {})
 
   if (!partial || hasOwn(body, "serviceType")) {
     payload.serviceType = ensureEnumValue(body.serviceType, "Service type", PUBLICATION_SERVICE_TYPES);
-    payload.priceUsd = SERVICE_PRICING[payload.serviceType].priceUsd;
-    payload.priceNgn = SERVICE_PRICING[payload.serviceType].priceNgn;
+    const servicePricing = await resolveServicePricing(payload.serviceType);
+    payload.priceUsd = servicePricing.priceUsd;
+    payload.priceNgn = servicePricing.priceNgn;
   }
 
   if (hasOwn(body, "fileUrl")) {

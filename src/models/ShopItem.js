@@ -11,10 +11,12 @@ const shopItemSchema = new mongoose.Schema(
     type: {
       type: String,
       required: [true, "Type is required."],
-      enum: {
-        values: ["Course", "Tool", "Template", "Guide"],
-        message: "Type must be one of Course, Tool, Template, or Guide.",
-      },
+      trim: true,
+    },
+    category: {
+      type: String,
+      required: [true, "Category is required."],
+      trim: true,
     },
     pricingModel: {
       type: String,
@@ -52,6 +54,15 @@ const shopItemSchema = new mongoose.Schema(
       type: String,
       default: "",
       trim: true,
+    },
+    previewLink: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    isTemplate: {
+      type: Boolean,
+      default: false,
     },
     image: {
       type: String,

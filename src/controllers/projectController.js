@@ -8,7 +8,9 @@ import {
   ensureStringArray,
   hasOwn,
   PROJECT_STAGES,
+  PROJECT_STATUSES,
 } from "../utils/validators.js";
+import { buildPaginationMeta, resolvePagination } from "../utils/pagination.js";
 
 const buildProjectPayload = (body, { partial = false } = {}) => {
   const payload = {};
@@ -37,6 +39,18 @@ const buildProjectPayload = (body, { partial = false } = {}) => {
     payload.outcome = "";
   }
 
+  if (hasOwn(body, "status")) {
+    payload.status = ensureEnumValue(body.status, "Status", PROJECT_STATUSES);
+  } else if (!partial) {
+    payload.status = "pending";
+  }
+
+  if (hasOwn(body, "projectUrl")) {
+    payload.projectUrl = ensureOptionalString(body.projectUrl, "Project URL");
+  } else if (!partial) {
+    payload.projectUrl = "";
+  }
+
   if (hasOwn(body, "techStack")) {
     payload.techStack = ensureStringArray(body.techStack, "Tech stack");
   } else if (!partial) {
@@ -60,13 +74,37 @@ const buildProjectPayload = (body, { partial = false } = {}) => {
   return payload;
 };
 
-export const getProjects = asyncHandler(async (_req, res) => {
-  const projects = await Project.find().sort({ createdAt: -1 });
+export const getProjects = asyncHandler(async (req, res) => {
+  const filters = {};
+
+  if (req.query.category) {
+    filters.category = new RegExp(`^${req.query.category}$`, "i");
+  }
+
+  if (req.query.status) {
+    filters.status = req.query.status;
+  }
+
+  const shouldRandomize = `${req.query.random || ""}`.toLowerCase() === "true";
+  const { limit, page, skip } = resolvePagination(req.query, { defaultLimit: 6 });
+
+  const total = await Project.countDocuments(filters);
+  let projects;
+
+  if (shouldRandomize) {
+    projects = await Project.aggregate([
+      { $match: filters },
+      { $sample: { size: Math.max(Math.min(limit, total || limit), 1) } }
+    ]);
+  } else {
+    projects = await Project.find(filters).sort({ createdAt: -1 }).skip(skip).limit(limit);
+  }
 
   res.status(200).json({
     success: true,
     count: projects.length,
     data: projects,
+    pagination: buildPaginationMeta({ page, limit, total }),
   });
 });
 

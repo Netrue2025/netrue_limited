@@ -2,6 +2,7 @@ import ShopItem from "../models/ShopItem.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/apiError.js";
 import {
+  ensureBoolean,
   ensureEnumValue,
   ensureNumber,
   ensureOptionalString,
@@ -9,8 +10,8 @@ import {
   ensureStringArray,
   hasOwn,
   PRICING_MODELS,
-  SHOP_ITEM_TYPES,
 } from "../utils/validators.js";
+import { buildPaginationMeta, resolvePagination } from "../utils/pagination.js";
 
 const buildShopItemPayload = (body, { partial = false } = {}) => {
   const payload = {};
@@ -20,7 +21,13 @@ const buildShopItemPayload = (body, { partial = false } = {}) => {
   }
 
   if (!partial || hasOwn(body, "type")) {
-    payload.type = ensureEnumValue(body.type, "Type", SHOP_ITEM_TYPES);
+    payload.type = ensureRequiredString(body.type || body.category || "Digital Product", "Type");
+  } else if (!partial && hasOwn(body, "category")) {
+    payload.type = ensureRequiredString(body.category, "Type");
+  }
+
+  if (!partial || hasOwn(body, "category")) {
+    payload.category = ensureRequiredString(body.category || body.type, "Category");
   }
 
   if (!partial || hasOwn(body, "description")) {
@@ -63,6 +70,18 @@ const buildShopItemPayload = (body, { partial = false } = {}) => {
     payload.purchaseLink = "";
   }
 
+  if (hasOwn(body, "previewLink")) {
+    payload.previewLink = ensureOptionalString(body.previewLink, "Preview link");
+  } else if (!partial) {
+    payload.previewLink = "";
+  }
+
+  if (hasOwn(body, "isTemplate")) {
+    payload.isTemplate = ensureBoolean(body.isTemplate, "Template product");
+  } else if (!partial) {
+    payload.isTemplate = false;
+  }
+
   if (hasOwn(body, "image")) {
     payload.image = ensureOptionalString(body.image, "Image");
   } else if (!partial) {
@@ -87,13 +106,28 @@ const buildShopItemPayload = (body, { partial = false } = {}) => {
   return payload;
 };
 
-export const getShopItems = asyncHandler(async (_req, res) => {
-  const shopItems = await ShopItem.find().sort({ createdAt: -1 });
+export const getShopItems = asyncHandler(async (req, res) => {
+  const filters = {};
+
+  if (req.query.category) {
+    filters.category = new RegExp(`^${req.query.category}$`, "i");
+  }
+
+  if (req.query.pricingModel) {
+    filters.pricingModel = req.query.pricingModel;
+  }
+
+  const { limit, page, skip } = resolvePagination(req.query, { defaultLimit: 6 });
+  const [shopItems, total] = await Promise.all([
+    ShopItem.find(filters).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    ShopItem.countDocuments(filters)
+  ]);
 
   res.status(200).json({
     success: true,
     count: shopItems.length,
     data: shopItems,
+    pagination: buildPaginationMeta({ page, limit, total }),
   });
 });
 

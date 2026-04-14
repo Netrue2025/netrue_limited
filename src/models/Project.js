@@ -30,7 +30,20 @@ const projectSchema = new mongoose.Schema(
       },
       default: "Discovery",
     },
+    status: {
+      type: String,
+      enum: {
+        values: ["in_progress", "product_ready", "live", "pending"],
+        message: "Status must be one of in_progress, product_ready, live, or pending.",
+      },
+      default: "pending",
+    },
     outcome: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    projectUrl: {
       type: String,
       default: "",
       trim: true,
