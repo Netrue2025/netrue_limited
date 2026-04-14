@@ -3,18 +3,9 @@ import ApiError from "./apiError.js";
 export const PRODUCT_CATEGORIES = ["AI", "IoT", "Agritech", "Software"];
 export const PRODUCT_STATUSES = ["Prototype", "Pilot", "Available", "Pre-order"];
 export const PROJECT_STAGES = ["Discovery", "Pilot", "Rollout", "Production"];
-<<<<<<< HEAD
 export const SHOP_ITEM_TYPES = ["Course", "Tool", "Template", "Guide"];
 export const PRICING_MODELS = ["Free", "Paid"];
 export const SOCIAL_PLATFORMS = ["LinkedIn", "X", "Instagram", "Facebook", "Website"];
-=======
-export const PROJECT_STATUSES = ["in_progress", "product_ready", "live", "pending"];
-export const SHOP_ITEM_TYPES = ["Course", "Tool", "Template", "Guide", "Software", "Ebook", "Guide"];
-export const PRICING_MODELS = ["Free", "Paid"];
-export const SOCIAL_PLATFORMS = ["LinkedIn", "X", "Instagram", "Facebook", "Website"];
-export const PUBLICATION_SERVICE_TYPES = ["publication_submission", "proofreading", "full_writing_publishing"];
-export const PUBLICATION_SUBMISSION_STATUSES = ["pending", "paid", "reviewed", "completed"];
->>>>>>> 64ef527 (New update)
 
 export const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
@@ -117,14 +108,3 @@ export const ensureEnumValue = (value, fieldName, allowedValues) => {
 
   return normalized;
 };
-<<<<<<< HEAD
-=======
-
-export const ensureOptionalEnumValue = (value, fieldName, allowedValues) => {
-  if (value === undefined || value === null || value === "") {
-    return "";
-  }
-
-  return ensureEnumValue(value, fieldName, allowedValues);
-};
->>>>>>> 64ef527 (New update)
