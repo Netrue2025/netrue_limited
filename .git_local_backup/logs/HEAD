@@ -1,0 +1,8 @@
+0000000000000000000000000000000000000000 9f67636ddc2a669f6cfd35b7085be80ad33de568 juba <juba.jeremiah@gmail.com> 1775908741 +0100	commit (initial): My first commit
+9f67636ddc2a669f6cfd35b7085be80ad33de568 0000000000000000000000000000000000000000 juba <juba.jeremiah@gmail.com> 1775908768 +0100	Branch: renamed refs/heads/master to refs/heads/master
+9f67636ddc2a669f6cfd35b7085be80ad33de568 9f67636ddc2a669f6cfd35b7085be80ad33de568 juba <juba.jeremiah@gmail.com> 1775908768 +0100	Branch: renamed refs/heads/master to refs/heads/master
+9f67636ddc2a669f6cfd35b7085be80ad33de568 312055152e6b76ac67c8c521356d51292d1c9cc4 juba <juba.jeremiah@gmail.com> 1775913479 +0100	commit: Team and shop included
+312055152e6b76ac67c8c521356d51292d1c9cc4 055d36d82c5494ec2f16bb01ac9e77efa6faad9a juba <juba.jeremiah@gmail.com> 1775917785 +0100	commit: env edited
+055d36d82c5494ec2f16bb01ac9e77efa6faad9a e15793fdf326c15dd6839d529182bf2eb37ecbbd juba <juba.jeremiah@gmail.com> 1775917848 +0100	commit: .env edited
+e15793fdf326c15dd6839d529182bf2eb37ecbbd 31b4eb822ac35368a23c08fbfe059fb0bfc68b4c juba <juba.jeremiah@gmail.com> 1775921730 +0100	commit: New cors error fixed
+31b4eb822ac35368a23c08fbfe059fb0bfc68b4c d289be45fb44a10ebbc7ba04bcc923c25c4be729 juba <juba.jeremiah@gmail.com> 1776174642 +0100	commit: New update on 14 april 2024
