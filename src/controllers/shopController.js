@@ -88,6 +88,14 @@ const buildShopItemPayload = (body, { partial = false } = {}) => {
     payload.image = "";
   }
 
+  if (hasOwn(body, "images")) {
+    payload.images = ensureStringArray(body.images, "Images");
+  } else if (hasOwn(payload, "image")) {
+    payload.images = payload.image ? [payload.image] : [];
+  } else if (!partial) {
+    payload.images = [];
+  }
+
   const resolvedPricingModel = hasOwn(payload, "pricingModel") ? payload.pricingModel : undefined;
   const resolvedPrice = hasOwn(payload, "price") ? payload.price : undefined;
 

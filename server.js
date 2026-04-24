@@ -63,12 +63,21 @@ app.use(
       return callback(new Error("CORS policy does not allow access from this origin."));
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "If-None-Match"],
+    exposedHeaders: ["ETag"],
     credentials: true,
   }),
 );
 
 app.use(express.json({ limit: "1mb" }));
+
+app.use("/api", (req, res, next) => {
+  if (req.method === "GET") {
+    res.set("Cache-Control", "private, no-cache");
+  }
+
+  next();
+});
 
 app.get("/", (_req, res) => {
   res.status(200).json({

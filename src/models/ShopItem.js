@@ -69,6 +69,10 @@ const shopItemSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+    images: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,
