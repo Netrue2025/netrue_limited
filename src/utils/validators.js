@@ -9,6 +9,8 @@ export const PRICING_MODELS = ["Free", "Paid"];
 export const SOCIAL_PLATFORMS = ["LinkedIn", "X", "Instagram", "Facebook", "Website"];
 export const PUBLICATION_SERVICE_TYPES = ["publication_submission", "proofreading", "full_writing_publishing"];
 export const PUBLICATION_SUBMISSION_STATUSES = ["pending", "paid", "reviewed", "completed"];
+export const PAYMENT_TYPES = ["full", "part"];
+export const SERVICE_PAYMENT_STATUSES = ["pending", "paid", "failed"];
 
 export const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
